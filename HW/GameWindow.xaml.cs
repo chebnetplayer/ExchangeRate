@@ -108,13 +108,19 @@ namespace GameClient
 
         private void LockButtons()
         {
-            CreateGameButton.IsEnabled = false;
-            TakePartInGameButton.IsEnabled = false;
+            Dispatcher.Invoke(() => {
+                CreateGameButton.IsEnabled = false;
+                TakePartInGameButton.IsEnabled = false;
+            });       
         }
+
         private void UnLockButtons()
         {
-            CreateGameButton.IsEnabled = true;
-            TakePartInGameButton.IsEnabled = true;
+            Dispatcher.Invoke(() =>
+            {
+                CreateGameButton.IsEnabled = true;
+                TakePartInGameButton.IsEnabled = true;
+            });
         }
         private void TakePartInGameButton_Click(object sender, RoutedEventArgs e)
         {

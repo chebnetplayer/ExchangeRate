@@ -92,6 +92,8 @@ namespace ServerWinForm.Repository
                 var game = StartedGameFields.First(i => i.GameId == motion.GameId);
                 if (game.IsHostX && game.Host.Name == motion.MotionMaker)
                     game.MakeMotion(motion.CellId, TypeofCell.X);
+                if (game.IsHostX == false && game.Gamer.Name == motion.MotionMaker)
+                    game.MakeMotion(motion.CellId, TypeofCell.X);
                 else game.MakeMotion(motion.CellId, TypeofCell.O);
                 if (game.CheckOnFinishing())
                 {
