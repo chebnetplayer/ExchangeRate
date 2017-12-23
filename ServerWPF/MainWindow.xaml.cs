@@ -29,13 +29,12 @@ namespace ServerWinForm
                 case "icome":
                     Games.ComeGamerinGame(new User(senderWTask.From), new User(senderWTask.Description.Remove(0, 5)),_tm);
                     break;
-                case "hsout":
-                    Games.HostOutFromGame(Guid.Parse(senderWTask.Description.Remove(0, 5)), _tm);
+                case "meout":
+                    Games.OutFromGame(Guid.Parse(senderWTask.Description.Remove(0, 5)), _tm, senderWTask.From);
                     break;
                 case "gstep":
                     Games.MakeMotion(senderWTask.Description.Remove(0, 5),_tm);
-                    break;
-            }         
+                    break;            }         
         }
     }
 }

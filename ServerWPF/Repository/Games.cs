@@ -30,18 +30,24 @@ namespace ServerWinForm.Repository
            return "crgme"+JsonConvert.SerializeObject(newgame);
         }
 
-        public static void HostOutFromGame(Guid gameId, TaskManager.TaskManager _tm)
+        public static void OutFromGame(Guid gameId, TaskManager.TaskManager _tm, string maker)
         {
             try
             {
                 var gamefield = CreatedGameFields.FirstOrDefault(i => i.GameId == gameId);
-
                 if (gamefield != null)
                 {
                     Users.DeleteGame(gamefield.Name, _tm);
                     return;
                 }
                 gamefield = StartedGameFields.First(i => i.GameId == gameId);
+                if (maker == gamefield.Gamer.Name)
+                {
+                    GamerOutFromGame(gameId,_tm);
+                    StartedGameFields.Remove(gamefield);
+                    return;
+                }
+                _tm.Send(gamefield.Gamer.Name, "meout");
                 StartedGameFields.Remove(gamefield);
             }
             catch {
@@ -53,7 +59,7 @@ namespace ServerWinForm.Repository
         {
             var gamefield = StartedGameFields.First(i => i.GameId == gameId);
             StartedGameFields.Remove(gamefield);
-            _tm.Send(gamefield.Host.Name, "gmout");
+            _tm.Send(gamefield.Host.Name, "meout");
         }
 
         public static void ComeGamerinGame(User gamer, User host, TaskManager.TaskManager tm)

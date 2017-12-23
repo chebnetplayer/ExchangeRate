@@ -26,6 +26,7 @@ namespace GameClient
         private readonly User _mainUser;
         private readonly TaskManager.TaskManager _tm;
         private readonly ObservableCollection<String> _createdGames;
+        private GameFieldWindow _gameFieldWindow;
         
 
         private void CreateGameButton_Click(object sender, RoutedEventArgs e)
@@ -39,10 +40,10 @@ namespace GameClient
             switch (senderWTask.Description.Substring(0, 5))
             {
                 case "crgme":
-                    CreateGameField(JsonConvert.DeserializeObject<GameField>(senderWTask.Description.Remove(0, 5)));
+                    CreateGameField(senderWTask.Description.Remove(0, 5));
                     break;
                 case "ycome":
-                    ComeInGame(JsonConvert.DeserializeObject<GameField>(senderWTask.Description.Remove(0, 5)));
+                    ComeInGame(senderWTask.Description.Remove(0, 5));
                     break;
                 case "ncome":
                     MessageBox.Show("Ошибка! Не удалось войти в игру");
@@ -62,31 +63,73 @@ namespace GameClient
                             _createdGames.Remove(senderWTask.Description.Remove(0, 5));
                         });
                     break;
-
+                case "Gcome":
+                    _gameFieldWindow.GamerCome(senderWTask.Description.Remove(0, 5));
+                    break;
+                case "meout":
+                    MessageBox.Show("Противник вышел");
+                    Dispatcher.Invoke(_gameFieldWindow.Close);
+                    UnLockButtons();
+                    break;
+                case "gstep":
+                    _gameFieldWindow.GetMotion(senderWTask.Description.Remove(0, 5));
+                    break;
+                case "Xwinr":
+                    Dispatcher.Invoke(_gameFieldWindow.Close);
+                    MessageBox.Show("Крестики победили!!!");
+                    UnLockButtons();
+                    break;
+                case "Owinr":
+                    Dispatcher.Invoke(_gameFieldWindow.Close);
+                    MessageBox.Show("Нолики победили!!!");
+                    UnLockButtons();
+                    break;
+                case "ystep":
+                    _gameFieldWindow.UnlockAllfields();
+                    break;
+                case "drow1":
+                    Dispatcher.Invoke(_gameFieldWindow.Close);
+                    MessageBox.Show("Ничья!!!!");
+                    break;
             }
         }
 
 
-        private void CreateGameField(GameField gameField)
+        private void CreateGameField(string json)
         {
+            var gameField = JsonConvert.DeserializeObject<GameField>(json);
             Dispatcher.Invoke(
                  () => { 
-                 new GameFieldWindow(_mainUser, _tm, gameField).Show();
-             });
+                     _gameFieldWindow = new GameFieldWindow(_mainUser, gameField,_tm);
+                     LockButtons();
+                     _gameFieldWindow.Show();                     
+                 });
         }
 
-
+        private void LockButtons()
+        {
+            CreateGameButton.IsEnabled = false;
+            TakePartInGameButton.IsEnabled = false;
+        }
+        private void UnLockButtons()
+        {
+            CreateGameButton.IsEnabled = true;
+            TakePartInGameButton.IsEnabled = true;
+        }
         private void TakePartInGameButton_Click(object sender, RoutedEventArgs e)
         {
             var game = Games.SelectedItems[0];
             _tm.Send("CURSserver", "icome"+game);
         }
 
-        private void ComeInGame(GameField gameField)
+        private void ComeInGame(string json)
         {
+            var gameField = JsonConvert.DeserializeObject<GameField>(json);
             Dispatcher.Invoke(
                 () => {
-                    new GameFieldWindow(_mainUser, _tm, gameField).Show();
+                    _gameFieldWindow = new GameFieldWindow(_mainUser, gameField, _tm);
+                    LockButtons();
+                    _gameFieldWindow.Show();
                 });
         }
 

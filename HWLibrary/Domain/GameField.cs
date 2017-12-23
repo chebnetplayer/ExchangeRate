@@ -74,7 +74,7 @@ namespace HWLibrary.Domain
                 }
             if (Cells[1].TypeofCell == Cells[4].TypeofCell
                 && Cells[4].TypeofCell == Cells[7].TypeofCell)
-                switch (Cells[0].TypeofCell)
+                switch (Cells[1].TypeofCell)
                 {
                     case TypeofCell.O:
                         return 'O';
@@ -85,7 +85,7 @@ namespace HWLibrary.Domain
                 }
             if (Cells[2].TypeofCell == Cells[5].TypeofCell
                 && Cells[5].TypeofCell == Cells[8].TypeofCell)
-                switch (Cells[0].TypeofCell)
+                switch (Cells[2].TypeofCell)
                 {
                     case TypeofCell.O:
                         return 'O';
@@ -96,7 +96,7 @@ namespace HWLibrary.Domain
                 }
             if (Cells[2].TypeofCell == Cells[4].TypeofCell
                 && Cells[4].TypeofCell == Cells[6].TypeofCell)
-                switch (Cells[0].TypeofCell)
+                switch (Cells[2].TypeofCell)
                 {
                     case TypeofCell.O:
                         return 'O';
@@ -107,7 +107,7 @@ namespace HWLibrary.Domain
                 }
             if (Cells[3].TypeofCell == Cells[4].TypeofCell
                 && Cells[4].TypeofCell == Cells[5].TypeofCell)
-                switch (Cells[0].TypeofCell)
+                switch (Cells[3].TypeofCell)
                 {
                     case TypeofCell.O:
                         return 'O';
@@ -118,7 +118,7 @@ namespace HWLibrary.Domain
                 }
             if (Cells[6].TypeofCell != Cells[7].TypeofCell || Cells[7].TypeofCell != Cells[8].TypeofCell)
                 return default(char);
-            switch (Cells[0].TypeofCell)
+            switch (Cells[6].TypeofCell)
             {
                 case TypeofCell.O:
                     return 'O';

@@ -7,12 +7,13 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using HWLibrary.Domain;
 using Newtonsoft.Json;
+using TaskManager;
 
 namespace HW
 {
     public partial class GameFieldWindow : Window
     {
-        public GameFieldWindow(User mainUser, TaskManager.TaskManager tm, GameField gameField)
+        public GameFieldWindow(User mainUser, GameField gameField, TaskManager.TaskManager tm)
         {
             InitializeComponent();
             Title = $"Крестики-нолики({mainUser.Name})";
@@ -20,16 +21,14 @@ namespace HW
             GetLogicalChildCollection(this, _buttons);
             LockAllfields();
             _mainUser = mainUser;
-            _tm = tm;
             _gameField = gameField;
-            _tm.Accept = null;
-            _tm.Accept += Processing;
+            _tm = tm;
         }
 
         private GameField _gameField;
         private readonly User _mainUser;
-        private readonly TaskManager.TaskManager _tm;
         private readonly List<Button> _buttons;
+        private readonly TaskManager.TaskManager _tm;
 
         private void ChangeField(int fieldnumber, string motionMaker)
         {
@@ -76,68 +75,28 @@ namespace HW
             });        
         }
     
-
-
-        private void Processing(object sender, EventArgs e)
-        {
-            var senderWTask = (TaskManager.WTask)sender;
-            switch (senderWTask.Description.Substring(0, 5))
-            {
-                case "Gcome":
-                    GamerCome(senderWTask.Description.Remove(0, 5));
-                    break;
-                case "gmout":
-                    MessageBox.Show("Противник вышел");
-                    Dispatcher.Invoke(Close);
-                    break;
-                case "gstep":
-                    GetMotion(senderWTask.Description.Remove(0, 5));
-                    break;
-                case "Xwinr":
-                    Dispatcher.Invoke(Close);
-                    MessageBox.Show("Крестики победили!!!");
-                    break;
-                case "Owinr":
-                    Dispatcher.Invoke(Close);
-                    MessageBox.Show("Нолики победили!!!");
-                    break;
-                case "ystep":
-                    UnlockAllfields();
-                    break;
-                case "fails":
-                    MessageBox.Show("Произошла ошибка");
-                    break;
-                case "drow1":
-                    Dispatcher.Invoke(Close);
-                    MessageBox.Show("Ничья!!!!");
-                    break;
-            }
-        }
-
-
-
-        private void LockAllfields()
+        internal void LockAllfields()
         {
             foreach (var button in _buttons)
             {
                 Dispatcher.Invoke(() => { button.IsEnabled = false; });
             }
         }
-        private void UnlockAllfields()
+        internal void UnlockAllfields()
         {
             foreach (var button in _buttons)
             {             
                 Dispatcher.Invoke(() => { button.IsEnabled = true; });
             }
         }
-        private void GetMotion(string json)
+        internal void GetMotion(string json)
         {
             var motion = JsonConvert.DeserializeObject<Motion>(json);
             if (motion.GameId==_gameField.GameId)
                 ChangeField(motion.CellId, motion.MotionMaker);
         }
 
-        private void GamerCome(string json)
+        internal void GamerCome(string json)
         {
             _gameField = JsonConvert.DeserializeObject<GameField>(json);
         }
@@ -202,14 +161,7 @@ namespace HW
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (_gameField.Host.Name == _mainUser.Name)
-            {
-                _tm.Send("CURSserver", "hsout" + _gameField.GameId);
-            }
-            else
-            {
-                _tm.Send("CURSserver", "gmout" + _gameField.GameId);
-            }
+          _tm.Send("CURSserver", "meout" + _gameField.GameId);       
         }
 
         private static void GetLogicalChildCollection<T>(DependencyObject parent, ICollection<T> logicalCollection) where T : DependencyObject
