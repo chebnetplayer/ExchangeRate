@@ -1,0 +1,85 @@
+﻿<Window x:Class="HW.GameFieldWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HW"
+        mc:Ignorable="d"
+        Title="GameFieldWindow" Height="300" Width="300" Closing="Window_Closing" Icon="Images/Icon.png">
+    <Window.Background>
+        <ImageBrush/>
+    </Window.Background>
+    <Grid x:Name="Grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="Field1" Content="" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Field1_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images/White.png"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="Field2" Content="" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Field2_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images/White.png"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="Field3" Content="" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Field3_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images/White.png"/>
+                </Button.Background>
+            </Button>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="Field4" Grid.ColumnSpan="1" Content="" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Field4_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images/White.png"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="Field5" Content="" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Field5_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images/White.png" Stretch="UniformToFill"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="Field6" Content="" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Field6_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images/White.png"/>
+                </Button.Background>
+            </Button>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="Field7"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Field7_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images/White.png"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="Field8"  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Field8_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images/White.png"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="Field9"  Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="Field9_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Images/White.png"/>
+                </Button.Background>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

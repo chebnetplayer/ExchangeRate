@@ -1,0 +1,37 @@
+﻿<Window x:Class="GameClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GameClient"
+        mc:Ignorable="d"
+        Title="Крестики-нолики" Height="155.455" Width="466.182" ResizeMode="NoResize" Icon="Images/Icon.png">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="91*"></ColumnDefinition>
+                <ColumnDefinition Width="135*"></ColumnDefinition>
+                <ColumnDefinition Width="140*"></ColumnDefinition>
+                <ColumnDefinition Width="87*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="NicknameTextBox" Grid.Column="2" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="" VerticalAlignment="Stretch"/>
+            <Label x:Name="NicknameLabel" Content="Введите ник" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="181*"></ColumnDefinition>
+                <ColumnDefinition Width="48*"/>
+                <ColumnDefinition Width="129*"></ColumnDefinition>
+                <ColumnDefinition Width="13*"/>
+                <ColumnDefinition Width="89*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="LoginButton" Content="Вход" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="LoginButton_Click" Grid.ColumnSpan="2"/>
+        </Grid>
+    </Grid>
+</Window>
