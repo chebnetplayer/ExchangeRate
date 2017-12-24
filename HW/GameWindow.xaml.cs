@@ -19,6 +19,7 @@ namespace GameClient
             _tm.Accept = null;
             _tm.Accept += Processing;
             InitializeComponent();
+            //REVIEW: Биндинг
             Title = $"Крестики-нолики({_mainUser.Name})";
             Games.ItemsSource = _createdGames;
         }
@@ -37,6 +38,7 @@ namespace GameClient
         private void Processing(object sender, EventArgs e)
         {
             var senderWTask = (TaskManager.WTask)sender;
+            //REVIEW:Здесь напрашивается enum
             switch (senderWTask.Description.Substring(0, 5))
             {
                 case "crgme":
@@ -108,6 +110,7 @@ namespace GameClient
 
         private void LockButtons()
         {
+            //REVIEW: Биндинг
             Dispatcher.Invoke(() => {
                 CreateGameButton.IsEnabled = false;
                 TakePartInGameButton.IsEnabled = false;
@@ -118,6 +121,7 @@ namespace GameClient
         {
             Dispatcher.Invoke(() =>
             {
+                //REVIEW:Биндинг
                 CreateGameButton.IsEnabled = true;
                 TakePartInGameButton.IsEnabled = true;
             });

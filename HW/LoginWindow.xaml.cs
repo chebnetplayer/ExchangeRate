@@ -28,6 +28,7 @@ namespace GameClient
             NicknameTextBox.Text = GetNickname();
             if (_tm == null)
             {
+                //REVIEW: Файл - в настройки
                 _tm = new TaskManager.TaskManager("settings1.txt", GetNickname()) {Enabled = true};
                 _tm.Accept += Processing;
             }
@@ -39,6 +40,7 @@ namespace GameClient
             var senderWTask = (TaskManager.WTask) sender;
             Dispatcher.Invoke(() =>
             {
+                //REVIEW: Строки не сравниваются через ==
                 if (senderWTask.Description.Remove(9) == "logintrue")
                 {
                     var games = JsonConvert.DeserializeObject<List<string>>(senderWTask.Description.Remove(0, 9));

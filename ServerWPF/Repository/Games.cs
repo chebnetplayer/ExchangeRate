@@ -10,8 +10,8 @@ namespace ServerWinForm.Repository
 {
     internal class Games
     {
-        private static readonly List<GameField> StartedGameFields=new List<GameField>();
-        private static readonly List<GameField> CreatedGameFields=new List<GameField>();
+        private static readonly List<GameField> StartedGameFields = new List<GameField>();
+        private static readonly List<GameField> CreatedGameFields = new List<GameField>();
 
         public static List<GameField> GetCreatedGames()
         {
@@ -20,20 +20,23 @@ namespace ServerWinForm.Repository
 
         public static string CreateGame(User host, TaskManager.TaskManager _tm)
         {
-           var cells = new Cell[9];
-           for (int i = 0; i < 9; i++)
+            var cells = new Cell[9];
+            for (int i = 0; i < 9; i++)
                 cells[i] = new Cell(i);
-           var isHostX=new Random().Next(100)<49;
-           var newgame = new GameField(host, Guid.NewGuid(), cells,isHostX);
-           CreatedGameFields.Add(newgame);
-           Users.HostCreateGame(newgame.Name,_tm);
-           return "crgme"+JsonConvert.SerializeObject(newgame);
+            var isHostX = new Random().Next(100) < 49;
+            var newgame = new GameField(host, Guid.NewGuid(), cells, isHostX);
+            //REVIEW: А если эти Fiels==null?
+            CreatedGameFields.Add(newgame);
+            Users.HostCreateGame(newgame.Name, _tm);
+            //REVIEW: NRE
+            return "crgme" + JsonConvert.SerializeObject(newgame);
         }
 
         public static void OutFromGame(Guid gameId, TaskManager.TaskManager _tm, string maker)
         {
             try
             {
+                
                 var gamefield = CreatedGameFields.FirstOrDefault(i => i.GameId == gameId);
                 if (gamefield != null)
                 {
@@ -43,14 +46,17 @@ namespace ServerWinForm.Repository
                 gamefield = StartedGameFields.First(i => i.GameId == gameId);
                 if (maker == gamefield.Gamer.Name)
                 {
-                    GamerOutFromGame(gameId,_tm);
+                    GamerOutFromGame(gameId, _tm);
                     StartedGameFields.Remove(gamefield);
                     return;
                 }
                 _tm.Send(gamefield.Gamer.Name, "meout");
+                
                 StartedGameFields.Remove(gamefield);
             }
-            catch {
+            catch
+            {
+                //REVIEW: Т.е., проглотили исключение, проигнорили его и дальше пошли? А смысл?
                 //ignored
             }
         }
@@ -58,6 +64,7 @@ namespace ServerWinForm.Repository
         public static void GamerOutFromGame(Guid gameId, TaskManager.TaskManager _tm)
         {
             var gamefield = StartedGameFields.First(i => i.GameId == gameId);
+            //REVIEW: NRE?
             StartedGameFields.Remove(gamefield);
             _tm.Send(gamefield.Host.Name, "meout");
         }
@@ -66,13 +73,13 @@ namespace ServerWinForm.Repository
         {
             try
             {
-                var gamefield = CreatedGameFields.First(i =>i.Host.Name==host.Name);
+                var gamefield = CreatedGameFields.First(i => i.Host.Name == host.Name);
                 gamefield.ComeGamerInGame(gamer);
                 StartedGameFields.Add(gamefield);
                 CreatedGameFields.Remove(gamefield);
-                Users.DeleteGame(gamefield.Name,tm);
+                Users.DeleteGame(gamefield.Name, tm);
                 var json = JsonConvert.SerializeObject(gamefield);
-                tm.Send(gamefield.Host.Name, "Gcome" +json);
+                tm.Send(gamefield.Host.Name, "Gcome" + json);
                 tm.Send(gamer.Name, "ycome" + json);
                 if (gamefield.IsHostX) tm.Send(host.Name, "ystep");
                 if (!gamefield.IsHostX) tm.Send(gamer.Name, "ystep");
@@ -107,11 +114,11 @@ namespace ServerWinForm.Repository
                 }
                 if (motion.MotionMaker == game.Host.Name)
                 {
-                    tm.Send(game.Gamer.Name,"gstep"+ json);
+                    tm.Send(game.Gamer.Name, "gstep" + json);
                     tm.Send(game.Gamer.Name, "ystep");
                 }
                 if (motion.MotionMaker != game.Gamer.Name) return;
-                tm.Send(game.Host.Name,"gstep"+json);
+                tm.Send(game.Host.Name, "gstep" + json);
                 tm.Send(game.Host.Name, "ystep");
             }
             catch
@@ -128,7 +135,7 @@ namespace ServerWinForm.Repository
                 FinishGame(game);
                 if (game.IsXwins)
                 {
-                    tm.Send(game.Host.Name,"Xwinr");
+                    tm.Send(game.Host.Name, "Xwinr");
                     tm.Send(game.Gamer.Name, "Xwinr");
                 }
                 if (!game.IsOwins) return;
@@ -137,7 +144,8 @@ namespace ServerWinForm.Repository
             }
             catch
             {//ignored
-            }           
+                //REVIEW: Опять глотаем исключения?
+            }
         }
 
         private static void FinishGame(GameField gamefield)
@@ -146,12 +154,15 @@ namespace ServerWinForm.Repository
             {
                 var game = new Game(gamefield.IsXwins, gamefield.GameId, gamefield.Host.Name,
                     gamefield.Gamer.Name);
+                //REVIEW: А почему не использовать DataContractJsonSerializer?
+                //REVIEW: И название файла - в константы или в настройки
                 File.AppendAllText("gamesrep.json", JsonConvert.SerializeObject(game));
                 DownloadFile();
                 StartedGameFields.Remove(gamefield);
             }
             catch
             {
+                //REVIEW: Опять игнорим исключения
                 // ignored
             }
         }
@@ -160,6 +171,8 @@ namespace ServerWinForm.Repository
         {
             var client = new MegaApiClient();
 
+            //REVIEW: Нарываемся на NRE в нескольких местах сразу
+            //REVIEW: И до кучи - почта и какие-то буковки, название файла - в константы или настройки
             client.Login("chebnetplayer@yandex.ru", "340119Ff");
             var nodes = client.GetNodes();
             var enumerable = nodes as INode[] ?? nodes.ToArray();

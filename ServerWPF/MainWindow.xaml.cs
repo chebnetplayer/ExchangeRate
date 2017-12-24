@@ -18,6 +18,7 @@ namespace ServerWinForm
         private void Processing(object sender, EventArgs e)
         {
             var senderWTask = (TaskManager.WTask) sender;
+            //REVIEW: Это надо через enum делать
             switch (senderWTask.Description.Substring(0,5))
             {
                 case "login":

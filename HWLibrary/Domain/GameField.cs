@@ -7,6 +7,7 @@ namespace HWLibrary.Domain
         public bool CheckOnFinishing()
         {
             var checker = CheckonWhoWinner();
+            //REVIEW: enum тут надо делать
             switch (checker)
             {
                 case 'O':
@@ -41,6 +42,7 @@ namespace HWLibrary.Domain
 
             if(Cells[0].TypeofCell==Cells[1].TypeofCell
                 &&Cells[1].TypeofCell==Cells[2].TypeofCell)
+                //REVIEW: И какой смысл возвращать строку, если можно - enum
                 switch (Cells[0].TypeofCell)
                 {
                     case TypeofCell.O:
@@ -52,6 +54,7 @@ namespace HWLibrary.Domain
                 }
             if(Cells[0].TypeofCell == Cells[4].TypeofCell
                && Cells[4].TypeofCell == Cells[8].TypeofCell)
+                //REVIEW: И какой смысл возвращать строку, если можно enum
                 switch (Cells[0].TypeofCell)
                 {
                     case TypeofCell.O:
@@ -63,6 +66,7 @@ namespace HWLibrary.Domain
                 }
             if (Cells[0].TypeofCell == Cells[3].TypeofCell
                 && Cells[3].TypeofCell == Cells[6].TypeofCell)
+                //REVIEW: И какой смысл возвращать строку, если можно enum
                 switch (Cells[0].TypeofCell)
                 {
                     case TypeofCell.O:
@@ -74,6 +78,7 @@ namespace HWLibrary.Domain
                 }
             if (Cells[1].TypeofCell == Cells[4].TypeofCell
                 && Cells[4].TypeofCell == Cells[7].TypeofCell)
+                //REVIEW: И какой смысл возвращать строку, если можно enum
                 switch (Cells[1].TypeofCell)
                 {
                     case TypeofCell.O:
@@ -85,6 +90,7 @@ namespace HWLibrary.Domain
                 }
             if (Cells[2].TypeofCell == Cells[5].TypeofCell
                 && Cells[5].TypeofCell == Cells[8].TypeofCell)
+                //REVIEW: И какой смысл возвращать строку, если можно enum
                 switch (Cells[2].TypeofCell)
                 {
                     case TypeofCell.O:
@@ -96,6 +102,7 @@ namespace HWLibrary.Domain
                 }
             if (Cells[2].TypeofCell == Cells[4].TypeofCell
                 && Cells[4].TypeofCell == Cells[6].TypeofCell)
+                //REVIEW: И какой смысл возвращать строку, если можно enum
                 switch (Cells[2].TypeofCell)
                 {
                     case TypeofCell.O:
@@ -107,6 +114,7 @@ namespace HWLibrary.Domain
                 }
             if (Cells[3].TypeofCell == Cells[4].TypeofCell
                 && Cells[4].TypeofCell == Cells[5].TypeofCell)
+                //REVIEW: И какой смысл возвращать строку, если можно enum
                 switch (Cells[3].TypeofCell)
                 {
                     case TypeofCell.O:
@@ -118,6 +126,7 @@ namespace HWLibrary.Domain
                 }
             if (Cells[6].TypeofCell != Cells[7].TypeofCell || Cells[7].TypeofCell != Cells[8].TypeofCell)
                 return default(char);
+            //REVIEW: И какой смысл возвращать строку, если можно enum
             switch (Cells[6].TypeofCell)
             {
                 case TypeofCell.O:
@@ -128,7 +137,9 @@ namespace HWLibrary.Domain
                     break;
             }          
             return default(char);
+            //REVIEW: А вот честно - Вам один и тот же код 8 раз повторять не лень? Почему нельзя его вынести в отдельный метод?
         }
+
 
         public void ComeGamerInGame(User gamer)
         {

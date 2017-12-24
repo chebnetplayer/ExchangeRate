@@ -7,5 +7,6 @@ namespace GameClient
     /// </summary>
     public partial class App : Application
     {
+        //REVIEW: Где глобальный обработчик ошибок?
     }
 }

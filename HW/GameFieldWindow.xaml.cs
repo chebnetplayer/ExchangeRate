@@ -16,6 +16,7 @@ namespace HW
         public GameFieldWindow(User mainUser, GameField gameField, TaskManager.TaskManager tm)
         {
             InitializeComponent();
+            //REVIEW: В биндинг
             Title = $"Крестики-нолики({mainUser.Name})";
             _buttons = new List<Button>();
             GetLogicalChildCollection(this, _buttons);
@@ -53,6 +54,7 @@ namespace HW
                         _gameField.MakeMotion(fieldnumber, TypeofCell.O);
                         break;
                 }
+                //REVIEW: Это надо делать через биндинг
                 var stackPnl = new StackPanel
                 {
                     Orientation = Orientation.Horizontal,
@@ -77,6 +79,7 @@ namespace HW
     
         internal void LockAllfields()
         {
+            //REVIEW:Биндинг
             foreach (var button in _buttons)
             {
                 Dispatcher.Invoke(() => { button.IsEnabled = false; });
@@ -84,6 +87,7 @@ namespace HW
         }
         internal void UnlockAllfields()
         {
+            //REVIEW:Биндинг
             foreach (var button in _buttons)
             {             
                 Dispatcher.Invoke(() => { button.IsEnabled = true; });
@@ -136,6 +140,7 @@ namespace HW
         {
             ChangeField(5, _mainUser.Name);
             LockAllfields();
+            //REVIEW: Во-первых, биндинг. Во-вторых, строки не сравниваются через ==
             Dispatcher.Invoke(() => {
                 _buttons.RemoveAll(i => i.Name == "Field6");
             });

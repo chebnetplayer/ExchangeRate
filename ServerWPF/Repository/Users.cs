@@ -22,6 +22,7 @@ namespace ServerWinForm.Repository
 
         public static void DeleteGame(string gameName,TaskManager.TaskManager _tm)
         {
+            //REVIEW: NRE?
             foreach (var user in UserRepository.Users)
             {
                 _tm.Send(user.Name, "delgm" + gameName);
@@ -30,6 +31,7 @@ namespace ServerWinForm.Repository
 
         public static void HostCreateGame(string gameName, TaskManager.TaskManager _tm)
         {
+            //REVIEW: NRE?
             foreach (var user in UserRepository.Users)
             {
                 _tm.Send(user.Name, "newgm" + gameName);
@@ -38,7 +40,9 @@ namespace ServerWinForm.Repository
 
         private static string GetCreatedGamesJson(IEnumerable<GameField> gamesList)
         {
+            //REVIEW: NRE?
             var gameshost = gamesList.Select(i => i.Host.Name).ToList();
+            //REVIEW: NRE?
             return JsonConvert.SerializeObject(gameshost);
         }
 
