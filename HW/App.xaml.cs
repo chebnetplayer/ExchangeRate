@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace GameClient
 {
@@ -7,6 +8,16 @@ namespace GameClient
     /// </summary>
     public partial class App : Application
     {
-        //REVIEW: Где глобальный обработчик ошибок?
+        public App()
+        {
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += handler;
+        }
+
+        static void handler(object sender, UnhandledExceptionEventArgs args)
+        {
+            var e = (Exception) args.ExceptionObject;
+            MessageBox.Show(e.Message);
+        }
     }
 }

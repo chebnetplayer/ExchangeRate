@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using CG.Web.MegaApiClient;
 using HWLibrary.Domain;
 using Newtonsoft.Json;
+using ServerWPF.Properties;
 
 namespace ServerWinForm.Repository
 {
@@ -20,16 +22,21 @@ namespace ServerWinForm.Repository
 
         public static string CreateGame(User host, TaskManager.TaskManager _tm)
         {
-            var cells = new Cell[9];
-            for (int i = 0; i < 9; i++)
-                cells[i] = new Cell(i);
-            var isHostX = new Random().Next(100) < 49;
-            var newgame = new GameField(host, Guid.NewGuid(), cells, isHostX);
-            //REVIEW: А если эти Fiels==null?
-            CreatedGameFields.Add(newgame);
-            Users.HostCreateGame(newgame.Name, _tm);
-            //REVIEW: NRE
-            return "crgme" + JsonConvert.SerializeObject(newgame);
+            try
+            {
+                var cells = new Cell[9];
+                for (int i = 0; i < 9; i++)
+                    cells[i] = new Cell(i);
+                var isHostX = new Random().Next(100) < 49;
+                var newgame = new GameField(host, Guid.NewGuid(), cells, isHostX);
+                CreatedGameFields.Add(newgame);
+                Users.HostCreateGame(newgame.Name, _tm);
+                return "crgme" + JsonConvert.SerializeObject(newgame);
+            }
+            catch
+            {
+                return "fails";
+            }
         }
 
         public static void OutFromGame(Guid gameId, TaskManager.TaskManager _tm, string maker)
@@ -50,23 +57,27 @@ namespace ServerWinForm.Repository
                     StartedGameFields.Remove(gamefield);
                     return;
                 }
-                _tm.Send(gamefield.Gamer.Name, "meout");
-                
+                _tm.Send(gamefield.Gamer.Name, "meout");             
                 StartedGameFields.Remove(gamefield);
             }
             catch
             {
-                //REVIEW: Т.е., проглотили исключение, проигнорили его и дальше пошли? А смысл?
-                //ignored
+                _tm.Send(maker, "fails");
             }
         }
 
         public static void GamerOutFromGame(Guid gameId, TaskManager.TaskManager _tm)
         {
-            var gamefield = StartedGameFields.First(i => i.GameId == gameId);
-            //REVIEW: NRE?
-            StartedGameFields.Remove(gamefield);
-            _tm.Send(gamefield.Host.Name, "meout");
+            try
+            {
+                var gamefield = StartedGameFields.First(i => i.GameId == gameId);
+                StartedGameFields.Remove(gamefield);
+                _tm.Send(gamefield.Host.Name, "meout");
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         public static void ComeGamerinGame(User gamer, User host, TaskManager.TaskManager tm)
@@ -143,8 +154,8 @@ namespace ServerWinForm.Repository
                 tm.Send(game.Gamer.Name, "Owinr");
             }
             catch
-            {//ignored
-                //REVIEW: Опять глотаем исключения?
+            {
+
             }
         }
 
@@ -154,31 +165,32 @@ namespace ServerWinForm.Repository
             {
                 var game = new Game(gamefield.IsXwins, gamefield.GameId, gamefield.Host.Name,
                     gamefield.Gamer.Name);
-                //REVIEW: А почему не использовать DataContractJsonSerializer?
-                //REVIEW: И название файла - в константы или в настройки
-                File.AppendAllText("gamesrep.json", JsonConvert.SerializeObject(game));
+                File.AppendAllText(Settings.Default.Repositorypath, JsonConvert.SerializeObject(game));
                 DownloadFile();
                 StartedGameFields.Remove(gamefield);
             }
-            catch
+            catch (Exception e)
             {
-                //REVIEW: Опять игнорим исключения
-                // ignored
+                MessageBox.Show(e.Message);
             }
         }
 
         public static void DownloadFile()
         {
-            var client = new MegaApiClient();
-
-            //REVIEW: Нарываемся на NRE в нескольких местах сразу
-            //REVIEW: И до кучи - почта и какие-то буковки, название файла - в константы или настройки
-            client.Login("chebnetplayer@yandex.ru", "340119Ff");
-            var nodes = client.GetNodes();
-            var enumerable = nodes as INode[] ?? nodes.ToArray();
-            var folders = enumerable.Where(n => n.Type == NodeType.Directory).ToList();
-            var folder = folders.First(f => f.Name == "Upload");
-            var myFile = client.UploadFile("gamesrep.json", folder);
+            try
+            {
+                var client = new MegaApiClient();            
+                client.Login(Settings.Default.MegaLogin, Settings.Default.MegaPassword);
+                var nodes = client.GetNodes();
+                var enumerable = nodes as INode[] ?? nodes.ToArray();
+                var folders = enumerable.Where(n => n.Type == NodeType.Directory).ToList();
+                var folder = folders.First(f => string.Equals(f.Name, "Upload"));
+                var myFile = client.UploadFile(Settings.Default.Repositorypath, folder);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }         
         }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameClient"
         mc:Ignorable="d"
-        Title="GameWindow" Height="306" Width="286" Closing="Window_Closing" Icon="Images/Icon.png">
+        Title="Крестики-нолики" Height="306" Width="286" Closing="Window_Closing" Icon="Images/Icon.png">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="66*"/>
@@ -42,8 +42,8 @@
                 <ColumnDefinition Width="15*"></ColumnDefinition>
                 <ColumnDefinition Width="10*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Button x:Name="CreateGameButton" Content="Создать" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="11" Click="CreateGameButton_Click" FontFamily="Showcard Gothic"/>
-            <Button x:Name="TakePartInGameButton" Content="Войти" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="TakePartInGameButton_Click"/>
+            <Button x:Name="CreateGameButton" Content="Создать" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontSize="11" Click="CreateGameButton_Click" FontFamily="Showcard Gothic" IsEnabled="{Binding IsEnabledProperty}"/>
+            <Button x:Name="TakePartInGameButton" Content="Войти" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="TakePartInGameButton_Click" IsEnabled="{Binding IsEnabledProperty}"/>
         </Grid>
     </Grid>
 </Window>

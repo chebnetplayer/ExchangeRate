@@ -66,8 +66,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="TaskManage">
-      <HintPath>..\HW\bin\Debug\TaskManage.dll</HintPath>
+    <Reference Include="TaskManage, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\TaskManage.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -78,6 +79,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands.cs" />
     <Compile Include="Repository\Games.cs" />
     <Compile Include="Repository\Users.cs" />
     <Page Include="MainWindow.xaml">

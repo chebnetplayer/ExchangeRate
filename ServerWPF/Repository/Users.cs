@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using HWLibrary.Domain;
 using HWLibrary.Infrastucture;
 using Newtonsoft.Json;
@@ -22,28 +24,50 @@ namespace ServerWinForm.Repository
 
         public static void DeleteGame(string gameName,TaskManager.TaskManager _tm)
         {
-            //REVIEW: NRE?
-            foreach (var user in UserRepository.Users)
+            try
             {
-                _tm.Send(user.Name, "delgm" + gameName);
+                foreach (var user in UserRepository.Users)
+                {
+                    _tm.Send(user.Name, "delgm" + gameName);
+                }
             }
+            catch (Exception e )
+            {
+                MessageBox.Show(e.Message);
+            }
+          
         }
 
         public static void HostCreateGame(string gameName, TaskManager.TaskManager _tm)
         {
-            //REVIEW: NRE?
-            foreach (var user in UserRepository.Users)
+            try
             {
-                _tm.Send(user.Name, "newgm" + gameName);
+                foreach (var user in UserRepository.Users)
+                {
+                    _tm.Send(user.Name, "newgm" + gameName);
+                }
             }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            
         }
 
         private static string GetCreatedGamesJson(IEnumerable<GameField> gamesList)
         {
-            //REVIEW: NRE?
-            var gameshost = gamesList.Select(i => i.Host.Name).ToList();
-            //REVIEW: NRE?
-            return JsonConvert.SerializeObject(gameshost);
+
+            try
+            {
+                var gameshost = gamesList.Select(i => i.Host.Name).ToList();
+                return JsonConvert.SerializeObject(gameshost);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+                return "fails";
+            }
+
         }
 
 

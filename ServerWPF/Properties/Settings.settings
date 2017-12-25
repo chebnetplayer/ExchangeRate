@@ -1,7 +1,15 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ServerWPF.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Repositorypath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">gamesrep.json</Value>
+    </Setting>
+    <Setting Name="MegaLogin" Type="System.String" Scope="User">
+      <Value Profile="(Default)">chebnetplayer@yandex.ru</Value>
+    </Setting>
+    <Setting Name="MegaPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">340119Ff</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

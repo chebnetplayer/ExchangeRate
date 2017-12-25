@@ -16,8 +16,6 @@ namespace HW
         public GameFieldWindow(User mainUser, GameField gameField, TaskManager.TaskManager tm)
         {
             InitializeComponent();
-            //REVIEW: В биндинг
-            Title = $"Крестики-нолики({mainUser.Name})";
             _buttons = new List<Button>();
             GetLogicalChildCollection(this, _buttons);
             LockAllfields();
@@ -30,7 +28,25 @@ namespace HW
         private readonly User _mainUser;
         private readonly List<Button> _buttons;
         private readonly TaskManager.TaskManager _tm;
+        /*
+        public new static DependencyProperty IsEnabledProperty = DependencyProperty.Register(
+            "IsEnabled",
+            typeof(bool),
+            typeof(Button),
+            new System.Windows.PropertyMetadata(PropertyChanged));
 
+        public bool IsEnabledBool
+        {
+            get => (bool)GetValue(IsEnabledProperty);
+            set => SetValue(IsEnabledProperty, value);
+        }
+
+        private static void PropertyChanged(DependencyObject depObj, DependencyPropertyChangedEventArgs e)
+        {
+            var control = depObj as Button;
+            if (e.Property != IsEnabledProperty) return;
+            if (control != null) control.IsEnabled = (bool)e.NewValue;
+        }*/
         private void ChangeField(int fieldnumber, string motionMaker)
         {
             Dispatcher.Invoke(() => {
@@ -54,7 +70,6 @@ namespace HW
                         _gameField.MakeMotion(fieldnumber, TypeofCell.O);
                         break;
                 }
-                //REVIEW: Это надо делать через биндинг
                 var stackPnl = new StackPanel
                 {
                     Orientation = Orientation.Horizontal,
@@ -62,10 +77,10 @@ namespace HW
 
                 };
                 stackPnl.Children.Add(img);
-                _buttons.First(i=>i.Name==$"Field{fieldnumber+1}").Content = stackPnl;
+                _buttons.First(i=> string.Equals(i.Name, $"Field{fieldnumber + 1}")).Content = stackPnl;
                 LockAllfields();
                 Dispatcher.Invoke(() => {
-                    _buttons.RemoveAll(i => i.Name == $"Field{fieldnumber + 1}");                       
+                    _buttons.RemoveAll(i =>string.Equals(i.Name,$"Field{fieldnumber + 1}"));                       
                 });
                 if (motionMaker != _mainUser.Name)
                 {
@@ -79,18 +94,22 @@ namespace HW
     
         internal void LockAllfields()
         {
-            //REVIEW:Биндинг
             foreach (var button in _buttons)
             {
-                Dispatcher.Invoke(() => { button.IsEnabled = false; });
+                Dispatcher.Invoke(() =>
+                {
+                    button.IsEnabled = false;
+                });
             }
         }
         internal void UnlockAllfields()
         {
-            //REVIEW:Биндинг
             foreach (var button in _buttons)
             {             
-                Dispatcher.Invoke(() => { button.IsEnabled = true; });
+                Dispatcher.Invoke(() =>
+                {
+                    button.IsEnabled = true;
+                });
             }
         }
         internal void GetMotion(string json)
@@ -140,10 +159,6 @@ namespace HW
         {
             ChangeField(5, _mainUser.Name);
             LockAllfields();
-            //REVIEW: Во-первых, биндинг. Во-вторых, строки не сравниваются через ==
-            Dispatcher.Invoke(() => {
-                _buttons.RemoveAll(i => i.Name == "Field6");
-            });
         }
 
         private void Field7_Click(object sender, RoutedEventArgs e)

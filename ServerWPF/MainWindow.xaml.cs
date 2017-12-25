@@ -2,6 +2,7 @@
 using System.Windows;
 using HWLibrary.Domain;
 using ServerWinForm.Repository;
+using ServerWPF;
 
 namespace ServerWinForm
 {
@@ -18,24 +19,25 @@ namespace ServerWinForm
         private void Processing(object sender, EventArgs e)
         {
             var senderWTask = (TaskManager.WTask) sender;
-            //REVIEW: Это надо через enum делать
-            switch (senderWTask.Description.Substring(0,5))
+            switch (Enum.Parse(typeof(Commands),senderWTask.Description.Substring(0,5)))
             {
-                case "login":
+               case Commands.login:
                    _tm.Send(senderWTask.From,Users.ReturnAnswerToUser(Users.CheckLogin(senderWTask)));
                    break;
-                case "crgme":
+                case Commands.crgme:
                     _tm.Send(senderWTask.From, Games.CreateGame(new User(senderWTask.From), _tm));
                     break;
-                case "icome":
+                case Commands.icome:
                     Games.ComeGamerinGame(new User(senderWTask.From), new User(senderWTask.Description.Remove(0, 5)),_tm);
                     break;
-                case "meout":
+                case Commands.meout:
                     Games.OutFromGame(Guid.Parse(senderWTask.Description.Remove(0, 5)), _tm, senderWTask.From);
                     break;
-                case "gstep":
+                case Commands.gstep:
                     Games.MakeMotion(senderWTask.Description.Remove(0, 5),_tm);
-                    break;            }         
+                    break;
+                    
+            }         
         }
     }
 }

@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using HW;
 using HWLibrary.Domain;
 using Newtonsoft.Json;
@@ -19,127 +23,151 @@ namespace GameClient
             _tm.Accept = null;
             _tm.Accept += Processing;
             InitializeComponent();
-            //REVIEW: Биндинг
-            Title = $"Крестики-нолики({_mainUser.Name})";
             Games.ItemsSource = _createdGames;
+            DataContext = this;
         }
 
         private readonly User _mainUser;
         private readonly TaskManager.TaskManager _tm;
         private readonly ObservableCollection<String> _createdGames;
         private GameFieldWindow _gameFieldWindow;
-        
+        public bool TakePartInGameButtonIsEnabled { get; set; }
 
         private void CreateGameButton_Click(object sender, RoutedEventArgs e)
         {
             _tm.Send("CURSserver", "crgme");
         }
 
+        public new static DependencyProperty IsEnabledProperty = DependencyProperty.Register(
+            "IsEnabled",
+            typeof(bool),
+            typeof(Button),
+            new System.Windows.PropertyMetadata(PropertyChanged));
+
+        public bool IsEnabledBool
+        {
+            get => (bool)GetValue(IsEnabledProperty);
+            set => SetValue(IsEnabledProperty, value);
+        }
+
+        private static void PropertyChanged(DependencyObject depObj, DependencyPropertyChangedEventArgs e)
+        {
+            var control = depObj as Button;
+            if (e.Property != IsEnabledProperty) return;
+            if (control != null) control.IsEnabled = (bool)e.NewValue;
+        }
+
         private void Processing(object sender, EventArgs e)
         {
-            var senderWTask = (TaskManager.WTask)sender;
-            //REVIEW:Здесь напрашивается enum
-            switch (senderWTask.Description.Substring(0, 5))
+            var senderWTask = (TaskManager.WTask) sender;
+            switch (Enum.Parse(typeof(Commands), senderWTask.Description.Substring(0, 5)))
             {
-                case "crgme":
+                case Commands.crgme:
                     CreateGameField(senderWTask.Description.Remove(0, 5));
                     break;
-                case "ycome":
+                case Commands.ycome:
                     ComeInGame(senderWTask.Description.Remove(0, 5));
                     break;
-                case "ncome":
+                case Commands.ncome:
                     MessageBox.Show("Ошибка! Не удалось войти в игру");
                     break;
-                case "fails":
+                case Commands.fails:
                     MessageBox.Show("Ошибка сервера");
                     break;
-                case "newgm":
+                case Commands.newgm:
                     Dispatcher.Invoke(
-                        () => {
+                        () =>
+                        {
                             _createdGames.Add(senderWTask.Description.Remove(0, 5));
                         });
                     break;
-                case "delgm":
+                case Commands.delgm:
                     Dispatcher.Invoke(
-                        () => {
+                        () =>
+                        {
                             _createdGames.Remove(senderWTask.Description.Remove(0, 5));
                         });
                     break;
-                case "Gcome":
+                case Commands.Gcome:
                     _gameFieldWindow.GamerCome(senderWTask.Description.Remove(0, 5));
                     break;
-                case "meout":
+                case Commands.meout:
                     MessageBox.Show("Противник вышел");
                     Dispatcher.Invoke(_gameFieldWindow.Close);
-                    UnLockButtons();
+                    UnLockButtons(default, new EventArgs());
                     break;
-                case "gstep":
+                case Commands.gstep:
                     _gameFieldWindow.GetMotion(senderWTask.Description.Remove(0, 5));
                     break;
-                case "Xwinr":
+                case Commands.Xwinr:
                     Dispatcher.Invoke(_gameFieldWindow.Close);
                     MessageBox.Show("Крестики победили!!!");
-                    UnLockButtons();
+                    UnLockButtons(default, new EventArgs());
                     break;
-                case "Owinr":
+                case Commands.Owinr:
                     Dispatcher.Invoke(_gameFieldWindow.Close);
                     MessageBox.Show("Нолики победили!!!");
-                    UnLockButtons();
+                    UnLockButtons(default, new EventArgs());
                     break;
-                case "ystep":
+                case Commands.ystep:
                     _gameFieldWindow.UnlockAllfields();
                     break;
-                case "drow1":
+                case Commands.drow1:
                     Dispatcher.Invoke(_gameFieldWindow.Close);
                     MessageBox.Show("Ничья!!!!");
+                    UnLockButtons(default, new EventArgs());
                     break;
             }
         }
 
-
+        
         private void CreateGameField(string json)
         {
             var gameField = JsonConvert.DeserializeObject<GameField>(json);
             Dispatcher.Invoke(
-                 () => { 
-                     _gameFieldWindow = new GameFieldWindow(_mainUser, gameField,_tm);
-                     LockButtons();
-                     _gameFieldWindow.Show();                     
-                 });
+                () =>
+                {
+                    _gameFieldWindow = new GameFieldWindow(_mainUser, gameField, _tm);
+                    LockButtons();
+                    _gameFieldWindow.Show();
+                    _gameFieldWindow.Closed += UnLockButtons;
+                });
         }
 
         private void LockButtons()
         {
-            //REVIEW: Биндинг
-            Dispatcher.Invoke(() => {
+            Dispatcher.Invoke(() =>
+            {
                 CreateGameButton.IsEnabled = false;
                 TakePartInGameButton.IsEnabled = false;
-            });       
+            });
         }
 
-        private void UnLockButtons()
+        private void UnLockButtons(object o, EventArgs e)
         {
             Dispatcher.Invoke(() =>
             {
-                //REVIEW:Биндинг
                 CreateGameButton.IsEnabled = true;
                 TakePartInGameButton.IsEnabled = true;
             });
         }
+
         private void TakePartInGameButton_Click(object sender, RoutedEventArgs e)
         {
             var game = Games.SelectedItems[0];
-            _tm.Send("CURSserver", "icome"+game);
+            _tm.Send("CURSserver", "icome" + game);
         }
 
         private void ComeInGame(string json)
         {
             var gameField = JsonConvert.DeserializeObject<GameField>(json);
             Dispatcher.Invoke(
-                () => {
+                () =>
+                {
                     _gameFieldWindow = new GameFieldWindow(_mainUser, gameField, _tm);
                     LockButtons();
                     _gameFieldWindow.Show();
+                    _gameFieldWindow.Closed += UnLockButtons;
                 });
         }
 

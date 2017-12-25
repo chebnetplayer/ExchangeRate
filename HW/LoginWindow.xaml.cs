@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using HW.Properties;
 using HWLibrary.Domain;
 using Newtonsoft.Json;
 
@@ -28,8 +29,7 @@ namespace GameClient
             NicknameTextBox.Text = GetNickname();
             if (_tm == null)
             {
-                //REVIEW: Файл - в настройки
-                _tm = new TaskManager.TaskManager("settings1.txt", GetNickname()) {Enabled = true};
+                _tm = new TaskManager.TaskManager(Settings.Default.SettingsPath, GetNickname()) {Enabled = true};
                 _tm.Accept += Processing;
             }
             _tm.Send("CURSserver", "login" + GetNickname());            
@@ -40,8 +40,7 @@ namespace GameClient
             var senderWTask = (TaskManager.WTask) sender;
             Dispatcher.Invoke(() =>
             {
-                //REVIEW: Строки не сравниваются через ==
-                if (senderWTask.Description.Remove(9) == "logintrue")
+                if (string.Equals(senderWTask.Description.Remove(9),"logintrue"))
                 {
                     var games = JsonConvert.DeserializeObject<List<string>>(senderWTask.Description.Remove(0, 9));
                     new GameWindow(new User(GetNickname()),_tm, games).Show();

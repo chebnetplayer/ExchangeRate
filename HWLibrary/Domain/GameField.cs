@@ -7,14 +7,13 @@ namespace HWLibrary.Domain
         public bool CheckOnFinishing()
         {
             var checker = CheckonWhoWinner();
-            //REVIEW: enum тут надо делать
             switch (checker)
             {
-                case 'O':
+                case TypeofCell.O:
                     IsGameFinished = true;
                     IsOwins = true;
                     break;
-                case 'X':
+                case TypeofCell.X:
                     IsGameFinished = true;
                     IsXwins = true;
                     break;
@@ -36,108 +35,49 @@ namespace HWLibrary.Domain
             Name = host.Name;
         }
 
-        private char CheckonWhoWinner()
+        private TypeofCell Check(int cell1, int cell2, int cell3)
         {
-
-
-            if(Cells[0].TypeofCell==Cells[1].TypeofCell
-                &&Cells[1].TypeofCell==Cells[2].TypeofCell)
-                //REVIEW: И какой смысл возвращать строку, если можно - enum
-                switch (Cells[0].TypeofCell)
-                {
-                    case TypeofCell.O:
-                        return 'O';
-                    case TypeofCell.X:
-                        return 'X';
-                    case TypeofCell.Null:
-                        break;
-                }
-            if(Cells[0].TypeofCell == Cells[4].TypeofCell
-               && Cells[4].TypeofCell == Cells[8].TypeofCell)
-                //REVIEW: И какой смысл возвращать строку, если можно enum
-                switch (Cells[0].TypeofCell)
-                {
-                    case TypeofCell.O:
-                        return 'O';
-                    case TypeofCell.X:
-                        return 'X';
-                    case TypeofCell.Null:
-                        break;
-                }
-            if (Cells[0].TypeofCell == Cells[3].TypeofCell
-                && Cells[3].TypeofCell == Cells[6].TypeofCell)
-                //REVIEW: И какой смысл возвращать строку, если можно enum
-                switch (Cells[0].TypeofCell)
-                {
-                    case TypeofCell.O:
-                        return 'O';
-                    case TypeofCell.X:
-                        return 'X';
-                    case TypeofCell.Null:
-                        break;
-                }
-            if (Cells[1].TypeofCell == Cells[4].TypeofCell
-                && Cells[4].TypeofCell == Cells[7].TypeofCell)
-                //REVIEW: И какой смысл возвращать строку, если можно enum
-                switch (Cells[1].TypeofCell)
-                {
-                    case TypeofCell.O:
-                        return 'O';
-                    case TypeofCell.X:
-                        return 'X';
-                    case TypeofCell.Null:
-                        break;
-                }
-            if (Cells[2].TypeofCell == Cells[5].TypeofCell
-                && Cells[5].TypeofCell == Cells[8].TypeofCell)
-                //REVIEW: И какой смысл возвращать строку, если можно enum
-                switch (Cells[2].TypeofCell)
-                {
-                    case TypeofCell.O:
-                        return 'O';
-                    case TypeofCell.X:
-                        return 'X';
-                    case TypeofCell.Null:
-                        break;
-                }
-            if (Cells[2].TypeofCell == Cells[4].TypeofCell
-                && Cells[4].TypeofCell == Cells[6].TypeofCell)
-                //REVIEW: И какой смысл возвращать строку, если можно enum
-                switch (Cells[2].TypeofCell)
-                {
-                    case TypeofCell.O:
-                        return 'O';
-                    case TypeofCell.X:
-                        return 'X';
-                    case TypeofCell.Null:
-                        break;
-                }
-            if (Cells[3].TypeofCell == Cells[4].TypeofCell
-                && Cells[4].TypeofCell == Cells[5].TypeofCell)
-                //REVIEW: И какой смысл возвращать строку, если можно enum
-                switch (Cells[3].TypeofCell)
-                {
-                    case TypeofCell.O:
-                        return 'O';
-                    case TypeofCell.X:
-                        return 'X';
-                    case TypeofCell.Null:
-                        break;
-                }
-            if (Cells[6].TypeofCell != Cells[7].TypeofCell || Cells[7].TypeofCell != Cells[8].TypeofCell)
-                return default(char);
-            //REVIEW: И какой смысл возвращать строку, если можно enum
-            switch (Cells[6].TypeofCell)
+            if (Cells[cell1].TypeofCell != Cells[cell2].TypeofCell || Cells[cell2].TypeofCell != Cells[cell3].TypeofCell
+            ) return TypeofCell.Null;
+            switch (Cells[cell1].TypeofCell)
             {
                 case TypeofCell.O:
-                    return 'O';
+                    return TypeofCell.O;
                 case TypeofCell.X:
-                    return 'X';
+                    return TypeofCell.X;
                 case TypeofCell.Null:
                     break;
-            }          
-            return default(char);
-            //REVIEW: А вот честно - Вам один и тот же код 8 раз повторять не лень? Почему нельзя его вынести в отдельный метод?
+            }
+            return TypeofCell.Null;
+        }
+
+        private TypeofCell CheckonWhoWinner()
+        {
+            var checker = Check(0, 1, 2);
+            if (checker == TypeofCell.O || checker == TypeofCell.X)
+                return checker;
+            checker= Check(0, 4, 8);
+            if (checker == TypeofCell.O || checker == TypeofCell.X)
+                return checker;
+            checker= Check(0, 3, 6);
+            if (checker == TypeofCell.O || checker == TypeofCell.X)
+                return checker;
+            checker= Check(1, 4, 7);
+            if (checker == TypeofCell.O || checker == TypeofCell.X)
+                return checker;
+            checker=Check(2, 5, 8);
+            if (checker == TypeofCell.O || checker == TypeofCell.X)
+                return checker;
+            checker= Check(2, 4, 6);
+            if (checker == TypeofCell.O || checker == TypeofCell.X)
+                return checker;
+            checker= Check(3, 4, 5);
+            if (checker == TypeofCell.O || checker == TypeofCell.X)
+                return checker;
+            checker= Check(6, 7, 8);
+            if (checker == TypeofCell.O || checker == TypeofCell.X)
+                return checker;
+            return checker;
         }
 
 
